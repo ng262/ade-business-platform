@@ -9,7 +9,6 @@ import Layout from "@/components/Layout";
 import LoginPage from "@/pages/LoginPage";
 import ChallengePage from "@/pages/ChallengePage";
 import ForbiddenPage from "@/pages/ForbiddenPage";
-import HomePage from "@/pages/HomePage";
 import AttendancePage from "@/pages/AttendancePage";
 
 export default function App() {
@@ -28,7 +27,6 @@ export default function App() {
               </ProtectedRoute>
             }
           >
-            <Route path="" element={<HomePage />} />
             <Route path="attendance" element={<AttendancePage />} />
           </Route>
         </Routes>
