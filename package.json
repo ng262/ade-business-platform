@@ -1,0 +1,12 @@
+{
+  "name": "ade",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "apps/*",
+    "shared"
+  ],
+  "devDependencies": {
+    "depcheck": "^1.4.7"
+  }
+}

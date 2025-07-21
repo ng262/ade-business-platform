@@ -1,0 +1,44 @@
+# === Dependencies ===
+node_modules/
+
+# === Build Artifacts ===
+dist/
+build/
+dist-ssr/
+.cache/
+.vite/
+.astro/
+*.tsbuildinfo
+
+# === Logs ===
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# === Environment / Secrets ===
+.env
+.env.*
+*.pem
+
+# === OS / Editor Junk ===
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# === Test Coverage ===
+coverage/
+.nyc_output/
+
+# === Optional Lockfiles (uncomment if managing with root lockfile) ===
+# package-lock.json
+# yarn.lock

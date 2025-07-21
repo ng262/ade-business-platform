@@ -1,0 +1,105 @@
+<!-- Apply Modal -->
+<div
+  class="service-modal modal fade"
+  id="applyModal"
+  tabindex="-1"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="close-modal" data-bs-dismiss="modal">
+        <img src="assets/img/close-icon.svg" alt="Close modal" />
+      </div>
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-8">
+            <div class="modal-body">
+              <h3 class="text-uppercase">Application Form</h3>
+              <p class="item-intro text-muted">
+                Please fill out the form below to apply.
+              </p>
+              <form id="application-form" novalidate>
+                <div class="row align-items-stretch mb-5">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <input
+                        class="form-control"
+                        name="fname"
+                        type="text"
+                        placeholder="First Name *"
+                      />
+                      <div class="invalid-feedback"></div>
+                    </div>
+                    <div class="form-group">
+                      <input
+                        class="form-control"
+                        name="lname"
+                        type="text"
+                        placeholder="Last Name *"
+                      />
+                      <div class="invalid-feedback"></div>
+                    </div>
+                    <div class="form-group">
+                      <input
+                        class="form-control"
+                        name="email"
+                        type="email"
+                        placeholder="Your Email *"
+                      />
+                      <div class="invalid-feedback"></div>
+                    </div>
+                    <div class="form-group mb-md-0">
+                      <input
+                        class="form-control"
+                        name="phone"
+                        type="tel"
+                        placeholder="Your Phone *"
+                      />
+                      <div class="invalid-feedback"></div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group form-group-textarea mb-md-0">
+                      <textarea
+                        class="form-control"
+                        name="message"
+                        placeholder="Your Message"></textarea>
+                      <div class="invalid-feedback"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group mb-5">
+                  <input
+                    class="form-control"
+                    name="files"
+                    type="file"
+                    multiple
+                  />
+                  <small class="form-text text-muted">
+                    Upload all necessary files at once (e.g., cover letter,
+                    resume).
+                  </small>
+                </div>
+                <div class="text-center">
+                  <button
+                    class="btn btn-primary btn-xl text-uppercase"
+                    type="submit"
+                  >
+                    <i class="fas fa-paper-plane me-1"></i> Submit Application
+                  </button>
+                </div>
+              </form>
+              <button
+                class="btn btn-secondary btn-xl text-uppercase mt-3"
+                data-bs-dismiss="modal"
+                type="button"
+              >
+                <i class="fas fa-xmark me-1"></i> Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

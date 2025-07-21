@@ -1,0 +1,59 @@
+---
+import "../css/styles.css";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+import ApplyModal from "../components/modals/ApplyModal.astro";
+const { title = "Adult Day Experiences", alwaysShrink = false } = Astro.props;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate icon" href="/favicon.ico" />
+
+    <meta
+      name="description"
+      content="Program details, contact info, and resources for Adult Day Experiences."
+    />
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css?family=Montserrat:400,700"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome -->
+    <script
+      src="https://use.fontawesome.com/releases/v6.3.0/js/all.js"
+      crossorigin="anonymous"></script>
+
+    <slot name="head" />
+  </head>
+
+  <body>
+    <div id="page-top"></div>
+    <Navbar alwaysShrink={alwaysShrink} />
+    <slot />
+    <Footer />
+    <ApplyModal />
+    <div
+      id="toastContainer"
+      class="position-fixed bottom-0 end-0 p-3"
+      style="z-index: 1055"
+    >
+    </div>
+
+    <script src="../scripts/main.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+    ></script>
+  </body>
+</html>

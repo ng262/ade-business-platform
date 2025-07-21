@@ -1,0 +1,78 @@
+<section id="contact" class="page-section">
+  <div class="container">
+    <div class="text-center">
+      <h2 class="section-heading text-uppercase">Contact Us</h2>
+      <h3 class="section-subheading text-muted">
+        Have questions? You might find quick answers in our
+        <a href="#" data-nav data-page="/faq">FAQ</a>
+      </h3>
+    </div>
+    <form id="contact-form" novalidate>
+      <div class="row align-items-stretch mb-5">
+        <div class="col-md-6">
+          <div class="form-group">
+            <input
+              class="form-control"
+              name="fname"
+              type="text"
+              placeholder="First Name *"
+            />
+            <div class="invalid-feedback"></div>
+          </div>
+          <div class="form-group">
+            <input
+              class="form-control"
+              name="lname"
+              type="text"
+              placeholder="Last Name *"
+            />
+            <div class="invalid-feedback"></div>
+          </div>
+          <div class="form-group">
+            <input
+              class="form-control"
+              name="email"
+              type="email"
+              placeholder="Your Email *"
+            />
+            <div class="invalid-feedback"></div>
+          </div>
+          <div class="form-group mb-md-0">
+            <input
+              class="form-control"
+              name="phone"
+              type="tel"
+              placeholder="Your Phone *"
+            />
+            <div class="invalid-feedback"></div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group form-group-textarea mb-md-0">
+            <textarea
+              class="form-control"
+              name="message"
+              placeholder="Your Message *"></textarea>
+            <div class="invalid-feedback"></div>
+          </div>
+        </div>
+      </div>
+      <div class="text-center">
+        <button
+          class="btn btn-primary btn-xl text-uppercase d-flex align-items-center justify-content-center gap-2"
+          id="contact-form-submit"
+          type="submit"
+        >
+          <span class="submit-text">Send Message</span>
+          <div
+            class="spinner-border spinner-border-sm text-light submit-spinner"
+            role="status"
+            style="display: none"
+          >
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </button>
+      </div>
+    </form>
+  </div>
+</section>
