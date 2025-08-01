@@ -1,7 +1,4 @@
 import { Routes, Route } from "react-router-dom";
-
-import { Toaster } from "@/components/ui/sonner";
-
 import { UserProvider } from "@/context/UserContext";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
@@ -14,7 +11,7 @@ import AttendancePage from "@/pages/AttendancePage";
 export default function App() {
   return (
     <UserProvider>
-      <ThemeProvider attribute="class" defaultTheme="system" storageKey="theme">
+      <ThemeProvider defaultTheme="system" storageKey="theme">
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/challenge" element={<ChallengePage />} />
