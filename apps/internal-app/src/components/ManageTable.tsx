@@ -52,7 +52,7 @@ export type Props<Row extends { id: number }> = {
   };
   loading: boolean;
   sort?: {
-    by: keyof Row;
+    by: (keyof Row)[];
     direction?: "asc" | "desc";
   };
 };
@@ -73,22 +73,27 @@ export function ManageTable<Row extends { id: number }>({
   const [menuOpen, setMenuOpen] = useState(false);
 
   const sortedData = useMemo(() => {
-    if (!sort?.by || !data?.length) return data;
+    if (!sort?.by?.length || !data?.length) return data;
 
     const { by, direction = "asc" } = sort;
     const arr = [...data];
     const collator = new Intl.Collator(undefined, { sensitivity: "base" });
 
     arr.sort((a, b) => {
-      const av = (a as any)[by];
-      const bv = (b as any)[by];
+      for (const key of by) {
+        const av = (a as any)[key];
+        const bv = (b as any)[key];
 
-      if (av == null && bv == null) return 0;
-      if (av == null) return 1;
-      if (bv == null) return -1;
+        if (av == null && bv == null) continue;
+        if (av == null) return 1;
+        if (bv == null) return -1;
 
-      const res = collator.compare(String(av), String(bv));
-      return direction === "asc" ? res : -res;
+        const res = collator.compare(String(av), String(bv));
+        if (res !== 0) {
+          return direction === "asc" ? res : -res;
+        }
+      }
+      return 0;
     });
 
     return arr;

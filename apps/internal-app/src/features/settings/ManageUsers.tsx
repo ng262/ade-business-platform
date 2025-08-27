@@ -123,7 +123,7 @@ export default function ManageUsers({
         onClick: () => setActiveStack((stk) => [...stk, "Create User"]),
       }}
       loading={loading}
-      sort={{ by: "lname", direction: "asc" }}
+      sort={{ by: ["lname"], direction: "asc" }}
     />
   );
 }
