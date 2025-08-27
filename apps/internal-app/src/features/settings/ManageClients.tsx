@@ -102,6 +102,7 @@ export default function ManageClients({
         onClick: () => setActiveStack((stk) => [...stk, "Create Client"]),
       }}
       loading={loading}
+      sort={{ by: "lname", direction: "asc" }}
     />
   );
 }

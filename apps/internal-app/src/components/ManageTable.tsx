@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   Table,
   TableHeader,
@@ -51,6 +51,10 @@ export type Props<Row extends { id: number }> = {
     onClick: () => void;
   };
   loading: boolean;
+  sort?: {
+    by: keyof Row;
+    direction?: "asc" | "desc";
+  };
 };
 
 export function ManageTable<Row extends { id: number }>({
@@ -61,11 +65,34 @@ export function ManageTable<Row extends { id: number }>({
   actions,
   createButton,
   loading,
+  sort,
 }: Props<Row>) {
   const [activeAction, setActiveAction] = useState<
     null | Props<Row>["actions"][number]
   >(null);
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const sortedData = useMemo(() => {
+    if (!sort?.by || !data?.length) return data;
+
+    const { by, direction = "asc" } = sort;
+    const arr = [...data];
+    const collator = new Intl.Collator(undefined, { sensitivity: "base" });
+
+    arr.sort((a, b) => {
+      const av = (a as any)[by];
+      const bv = (b as any)[by];
+
+      if (av == null && bv == null) return 0;
+      if (av == null) return 1;
+      if (bv == null) return -1;
+
+      const res = collator.compare(String(av), String(bv));
+      return direction === "asc" ? res : -res;
+    });
+
+    return arr;
+  }, [data, sort?.by, sort?.direction]);
 
   const triggerAction = (action: Props<Row>["actions"][number]) => {
     setMenuOpen(false);
@@ -143,8 +170,8 @@ export function ManageTable<Row extends { id: number }>({
                 rows={5}
                 columns={["", ...columns.map((c) => c.label)]}
               />
-            ) : data.length ? (
-              data.map((r) => (
+            ) : sortedData.length ? (
+              sortedData.map((r) => (
                 <TableRow
                   className="cursor-pointer"
                   key={r.id}

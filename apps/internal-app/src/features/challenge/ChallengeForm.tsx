@@ -1,7 +1,8 @@
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 import {
   Form,
@@ -35,6 +36,7 @@ export default function ChallengeForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const [showPassword, setShowPassword] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { setUser } = useUser();
@@ -79,11 +81,25 @@ export default function ChallengeForm({
                 <FormItem>
                   <FormLabel>New Password</FormLabel>
                   <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="Enter new password"
-                      {...field}
-                    />
+                    <div className="relative">
+                      <Input
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Enter new password"
+                        {...field}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword((p) => !p)}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground cursor-pointer"
+                        tabIndex={-1}
+                      >
+                        {showPassword ? (
+                          <EyeOff className="h-5 w-5" />
+                        ) : (
+                          <Eye className="h-5 w-5" />
+                        )}
+                      </button>
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -98,7 +114,7 @@ export default function ChallengeForm({
                   <FormLabel>Confirm Password</FormLabel>
                   <FormControl>
                     <Input
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       placeholder="Re-enter password"
                       {...field}
                     />
