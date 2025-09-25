@@ -4,6 +4,7 @@ import type {
   ClientData,
   ClientList,
   SerialId,
+  DeleteClients,
 } from "@shared/validation";
 import type { ServiceResponse } from "@/types/server.types";
 import { createSuccess, createFail } from "@/utils/service.util";
@@ -64,15 +65,13 @@ export async function updateClientService(
   return createSuccess({ status: 204 });
 }
 
-export async function createClientService({
-  fname,
-  lname,
-  side,
-  status,
-}: ClientData): Promise<ServiceResponse<undefined>> {
+export async function createClientService(
+  { fname, lname, side, status }: ClientData,
+  startDate: DateString
+): Promise<ServiceResponse<undefined>> {
   const pool = await getPool();
-
   const client = await pool.connect();
+
   try {
     await client.query("BEGIN");
 
@@ -90,13 +89,14 @@ export async function createClientService({
 
     await client.query(
       `INSERT INTO client_roster (cid, start_date)
-       VALUES ($1, CURRENT_DATE)`,
-      [cid]
+       VALUES ($1, $2::date)`,
+      [cid, startDate]
     );
 
     await client.query("COMMIT");
     return createSuccess({ status: 201 });
   } catch (error) {
+    console.error("[createClientService] error:", error);
     await client.query("ROLLBACK");
     return createFail({
       status: 500,

@@ -158,11 +158,11 @@ export default function SettingsDialog() {
             />
           )}
           {activeStack.at(-1) === "Create Client" && (
-            <ManageClient type="create" setActiveStack={setActiveStack} />
+            <ManageClient mode="create" setActiveStack={setActiveStack} />
           )}
           {activeStack.at(-1) === "Update Client" && client && (
             <ManageClient
-              type="update"
+              mode="update"
               client={client}
               setActiveStack={setActiveStack}
             />

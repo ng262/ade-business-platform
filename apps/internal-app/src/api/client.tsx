@@ -4,12 +4,14 @@ import type {
   Client,
   ClientData,
   ClientList,
+  DateString,
 } from "@shared/validation";
 import {
   serialIdSchema,
   serialIdListSchema,
   clientSchema,
   clientListSchema,
+  createClientSchema,
 } from "@shared/validation";
 import {
   getClientService,
@@ -71,11 +73,12 @@ export async function deleteClients(
 }
 
 export async function createClient(
-  clientData: ClientData
+  clientData: ClientData,
+  startDate: DateString
 ): Promise<ClientResult<undefined>> {
   return await fetchHandler({
     service: createClientService,
-    payload: { body: clientData },
-    payloadSchemas: { body: clientSchema },
+    payload: { body: { clientData, startDate } },
+    payloadSchemas: { body: createClientSchema },
   });
 }

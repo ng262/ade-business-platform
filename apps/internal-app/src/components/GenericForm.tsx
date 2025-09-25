@@ -38,7 +38,11 @@ export type SelectField = BaseField & {
   options: { label: string; value: string }[];
 };
 
-export type Field = InputField | SelectField;
+export type DateField = BaseField & {
+  type: "date";
+};
+
+export type Field = InputField | SelectField | DateField;
 
 type Props<T extends ZodSchema> = {
   formSchema: T;
@@ -85,9 +89,9 @@ export default function GenericForm<T extends ZodSchema>({
                       disabled={field.disabled}
                       {...formField}
                     />
-                  ) : (
+                  ) : field.type === "select" ? (
                     <Select
-                      value={formField.value}
+                      value={(formField.value as string) ?? ""}
                       onValueChange={formField.onChange}
                       disabled={field.disabled}
                     >
@@ -102,6 +106,13 @@ export default function GenericForm<T extends ZodSchema>({
                         ))}
                       </SelectContent>
                     </Select>
+                  ) : (
+                    <Input
+                      type="date"
+                      placeholder={field.placeholder}
+                      disabled={field.disabled}
+                      {...formField}
+                    />
                   )}
                 </FormControl>
                 <FormMessage />

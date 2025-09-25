@@ -8,13 +8,24 @@ const _ = {
     (val) => {
       if (typeof val === "string" || val instanceof Date) {
         const parsed = new Date(val);
+
         if (isNaN(parsed.getTime())) return undefined;
-        return format(parsed, "yyyy-MM-dd");
+
+        const year = parsed.getUTCFullYear();
+        const month = String(parsed.getUTCMonth() + 1).padStart(2, "0");
+        const day = String(parsed.getUTCDate()).padStart(2, "0");
+
+        const formatted = `${year}-${month}-${day}`;
+
+        return formatted;
       }
+
+      console.log("Invalid date input, returning undefined");
       return undefined;
     },
     z.string().regex(/^\d{4}-\d{2}-\d{2}$/)
   ),
+
   fname: z
     .string()
     .min(1, "First name is required")
@@ -69,6 +80,9 @@ const _ = {
     ),
 } as const;
 
+export const dateSchema = _.date;
+type DateString = z.infer<typeof dateSchema>;
+
 export const contactSchema = z.object({
   fname: _.fname,
   lname: _.lname,
@@ -119,6 +133,12 @@ export const deleteUsersSchema = z.array(
 );
 export type DeleteUsers = z.infer<typeof deleteUsersSchema>;
 
+export const deleteClientsSchema = z.object({
+  ids: z.array(_.serialId).min(1, "At least one client id is required"),
+});
+
+export type DeleteClients = z.infer<typeof deleteClientsSchema>;
+
 export const credentialsSchema = z.object({
   username: _.username,
   password: _.password,
@@ -168,8 +188,16 @@ export const clientSchema = z.object({
 });
 export type Client = z.infer<typeof clientSchema>;
 
+export type CreateUpdateClients = z.infer<typeof createUpdateClientSchema>;
+
 export const clientDataSchema = clientSchema.omit({ id: true });
 export type ClientData = z.infer<typeof clientDataSchema>;
+
+export const createClientSchema = z.object({
+  clientData: clientDataSchema,
+  startDate: _.date,
+});
+export type CreateClient = z.infer<typeof createClientSchema>;
 
 export const clientListSchema = z.array(clientSchema);
 export type ClientList = z.infer<typeof clientListSchema>;

@@ -17,18 +17,16 @@ const PgSession = connectPgSimple(session);
 
 const app = express();
 
+app.set("trust proxy", 1);
 app.use(morgan("dev"));
-
-const publicCors = cors({
-  origin: config.cors.publicOrigin,
-});
-
-const internalCors = cors({
-  origin: config.cors.internalOrigin,
-  credentials: true,
-});
-
 app.use(express.json());
+
+app.use(
+  cors({
+    origin: [config.cors.internalOrigin, config.cors.publicOrigin],
+    credentials: true,
+  })
+);
 
 app.use(
   session({
@@ -51,8 +49,8 @@ app.use(
 
 app.use(responseHandler);
 
-app.use("/api", internalCors, internalRouter);
-app.use("/public", publicCors, publicRouter);
+app.use("/api", internalRouter);
+app.use("/public", publicRouter);
 
 app.use(errorHandler);
 

@@ -3,7 +3,7 @@ import { useState } from "react";
 import GenericForm, { type Field } from "@/components/GenericForm";
 import { createClient, updateClient } from "@/api/client";
 import { Status, Side } from "@shared/types/domain.types";
-import { clientDataSchema } from "@shared/validation";
+import { clientDataSchema, dateSchema } from "@shared/validation";
 import type { Client } from "@/types";
 import { toast } from "sonner";
 import { emptyDefaults } from "@/lib/utils";
@@ -41,6 +41,11 @@ const clientFields: Field[] = [
       value: status,
     })),
   },
+  {
+    name: "startDate",
+    label: "Start Date",
+    type: "date",
+  },
 ];
 
 type BaseProps = {
@@ -48,24 +53,38 @@ type BaseProps = {
 };
 
 type CreateProps = BaseProps & {
-  client?: undefined;
+  mode: "create";
 };
 
 type UpdateProps = BaseProps & {
+  mode: "update";
   client: Client;
 };
 
 type Props = CreateProps | UpdateProps;
 
+const createClientSchema = clientDataSchema.extend({
+  startDate: dateSchema,
+});
+const updateClientSchema = clientDataSchema;
+
 export default function ManageClient(props: Props) {
-  const { setActiveStack, client } = props;
+  const { setActiveStack, mode } = props;
   const [loading, setLoading] = useState(false);
 
-  const onSubmit = async (values: z.infer<typeof clientDataSchema>) => {
+  const onSubmit = async (values: any) => {
     setLoading(true);
-    const result = client
-      ? await updateClient(client.id, values)
-      : await createClient(values);
+
+    let result;
+    if (mode === "update") {
+      result = await updateClient(props.client.id, values);
+    } else {
+      const { startDate, ...clientData } = values as z.infer<
+        typeof createClientSchema
+      >;
+      result = await createClient(clientData, startDate);
+    }
+
     setLoading(false);
 
     if (!result.success) {
@@ -73,17 +92,23 @@ export default function ManageClient(props: Props) {
       return;
     }
 
-    toast.success(client ? "Client updated" : "Client created");
+    toast.success(mode === "update" ? "Client updated" : "Client created");
     setActiveStack((prev) => prev.slice(0, -1));
   };
 
   return (
     <GenericForm
-      formSchema={clientDataSchema}
-      fields={clientFields}
-      defaultValues={props.client ?? emptyDefaults(clientDataSchema)}
+      formSchema={mode === "create" ? createClientSchema : updateClientSchema}
+      fields={
+        mode === "create"
+          ? clientFields
+          : clientFields.filter((f) => f.name !== "startDate")
+      }
+      defaultValues={
+        mode === "create" ? emptyDefaults(createClientSchema) : props.client
+      }
       submitButton={{
-        label: client ? "Update Client" : "Create Client",
+        label: mode === "update" ? "Update Client" : "Create Client",
         onSubmit,
       }}
       loading={loading}

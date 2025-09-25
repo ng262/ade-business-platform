@@ -3,6 +3,7 @@ import {
   getClientsService,
   updateClientService,
   createClientService,
+  deleteClientsService,
 } from "@/services/internal/client.service";
 
 import type {
@@ -10,6 +11,7 @@ import type {
   Client,
   ClientList,
   ClientData,
+  DeleteClients,
 } from "@shared/validation";
 import type { ServiceResponse } from "@/types/server.types";
 import { isServiceSuccess } from "@/utils/controller.util";
@@ -83,9 +85,13 @@ export async function updateClient(req: Request, res: Response) {
 export async function createClient(req: Request, res: Response) {
   if (!req.validatedBody) throw new Error("validatedBody missing");
 
-  const clientData = req.validatedBody as ClientData;
-  const serviceResponse: ServiceResponse<undefined> =
-    await createClientService(clientData);
+  const clientData = req.validatedBody.clientData as ClientData;
+  const startDate = req.validatedBody.startDate as DateString;
+
+  const serviceResponse: ServiceResponse<undefined> = await createClientService(
+    clientData,
+    startDate
+  );
 
   if (!isServiceSuccess(serviceResponse)) {
     res.fail({

@@ -42,6 +42,7 @@ import {
   attendanceQuerySchema,
   attendanceUpsertSchema,
   clientDataSchema,
+  createClientSchema,
 } from "@shared/validation";
 
 import { Role } from "@shared/types/domain.types";
@@ -73,7 +74,7 @@ router.post(
 router.get("/auth/me", asyncHandler(requireAuth), asyncHandler(getSessionUser));
 
 router.get(
-  "/user/:id",
+  "/users/:id",
   validationHandler({ params: z.object({ id: serialIdSchema }) }),
   asyncHandler(requireAuth),
   requireAtLeast(Role.Admin),
@@ -98,7 +99,7 @@ router.delete(
 );
 
 router.put(
-  "/user/:id",
+  "/users/:id",
   validationHandler({
     params: z.object({ id: serialIdSchema }),
     body: userDataSchema,
@@ -109,7 +110,7 @@ router.put(
 );
 
 router.get(
-  "/client/:id",
+  "/clients/:id",
   validationHandler({ params: z.object({ id: serialIdSchema }) }),
   asyncHandler(requireAuth),
   asyncHandler(getClient)
@@ -118,7 +119,7 @@ router.get(
 router.get("/clients", asyncHandler(requireAuth), asyncHandler(getClients));
 
 router.put(
-  "/client/:id",
+  "/clients/:id",
   validationHandler({
     params: z.object({ id: serialIdSchema }),
     body: clientDataSchema,
@@ -128,8 +129,8 @@ router.put(
 );
 
 router.post(
-  "/client",
-  validationHandler({ body: clientDataSchema }),
+  "/clients",
+  validationHandler({ body: createClientSchema }),
   asyncHandler(requireAuth),
   asyncHandler(createClient)
 );
