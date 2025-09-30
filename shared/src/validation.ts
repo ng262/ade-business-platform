@@ -133,6 +133,25 @@ export const deleteUsersSchema = z.array(
 );
 export type DeleteUsers = z.infer<typeof deleteUsersSchema>;
 
+export const clientsQuerySchema = z.object({
+  side: _.side.optional(),
+});
+export type ClientsQuery = z.infer<typeof clientsQuerySchema>;
+
+export const clientAttendanceQuerySchema = z.object({
+  month: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/, {
+    message: "Month must be in YYYY-MM format",
+  }),
+  cid: _.serialId,
+});
+export type ClientAttendanceQuery = z.infer<typeof clientAttendanceQuerySchema>;
+
+export const clientAttendanceMapSchema = z.record(
+  z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  z.nativeEnum(AttendanceStatus)
+);
+export type ClientAttendanceMap = z.infer<typeof clientAttendanceMapSchema>;
+
 export const deleteClientsSchema = z.object({
   ids: z.array(_.serialId).min(1, "At least one client id is required"),
 });
@@ -227,11 +246,6 @@ export const attendanceUpsertSchema = z.array(
   })
 );
 export type AttendanceUpsert = z.infer<typeof attendanceUpsertSchema>;
-
-export const clientsQuerySchema = z.object({
-  name: z.string(),
-});
-export type ClientsQuery = z.infer<typeof clientsQuerySchema>;
 
 export const goalsQuerySchema = z.object({
   cid: _.serialId,
