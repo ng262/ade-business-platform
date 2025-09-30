@@ -1,5 +1,10 @@
 import type { RequestPayload } from "@/lib/fetchHandler";
-import type { ClientData, Client } from "@shared/validation";
+import type {
+  ClientData,
+  Client,
+  ClientsQuery,
+  DeleteClients,
+} from "@shared/validation";
 import type { SerialId } from "@shared/types/apiResult.types";
 import config from "@/config";
 
@@ -11,8 +16,18 @@ export async function getClientService({
   });
 }
 
-export async function getClientsService(): Promise<Response> {
-  return fetch(`${config.apiUrl}/api/clients`, {
+export async function getClientsService({
+  query,
+}: RequestPayload<undefined, ClientsQuery> = {}): Promise<Response> {
+  const qs = new URLSearchParams();
+
+  if (query?.side) {
+    qs.append("side", query.side);
+  }
+
+  const url = `${config.apiUrl}/api/clients${qs.toString() ? `?${qs}` : ""}`;
+
+  return fetch(url, {
     credentials: "include",
   });
 }

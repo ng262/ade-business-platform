@@ -12,6 +12,7 @@ import type {
   ClientList,
   ClientData,
   DeleteClients,
+  ClientsQuery,
 } from "@shared/validation";
 import type { ServiceResponse } from "@/types/server.types";
 import { isServiceSuccess } from "@/utils/controller.util";
@@ -40,8 +41,11 @@ export async function getClient(req: Request, res: Response) {
 }
 
 export async function getClients(req: Request, res: Response) {
+  if (!req.validatedQuery) throw new Error("validatedQuery missing");
+
+  const query = req.validatedQuery as ClientsQuery;
   const serviceResponse: ServiceResponse<ClientList> =
-    await getClientsService();
+    await getClientsService(query);
 
   if (!isServiceSuccess(serviceResponse)) {
     res.fail({

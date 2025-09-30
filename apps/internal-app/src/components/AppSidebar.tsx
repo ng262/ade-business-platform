@@ -7,6 +7,7 @@ import {
   Table,
   Search,
   Settings as SettingsIcon,
+  Receipt,
 } from "lucide-react";
 
 import {
@@ -42,6 +43,7 @@ const items = [
   { title: "Home", url: "/", icon: Home },
   { title: "Data Sheet", url: "/data", icon: Table },
   { title: "Attendance", url: "/attendance", icon: Calendar },
+  { title: "Billing", url: "/billing", icon: Receipt, roleRequired: "Admin" },
 ];
 
 export function AppSidebar() {
@@ -76,16 +78,21 @@ export function AppSidebar() {
           <SidebarGroup>
             <SidebarGroupContent>
               <SidebarMenu>
-                {items.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild>
-                      <Link to={item.url} className="flex items-center gap-2">
-                        <item.icon className="h-4 w-4" />
-                        <span>{item.title}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
+                {items
+                  .filter(
+                    (item) =>
+                      !item.roleRequired || user.role === item.roleRequired
+                  )
+                  .map((item) => (
+                    <SidebarMenuItem key={item.title}>
+                      <SidebarMenuButton asChild>
+                        <Link to={item.url} className="flex items-center gap-2">
+                          <item.icon className="h-4 w-4" />
+                          <span>{item.title}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
                 <SidebarMenuItem>
                   <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
                     <DialogTrigger asChild>

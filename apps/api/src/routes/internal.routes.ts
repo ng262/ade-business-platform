@@ -30,6 +30,7 @@ import {
 import {
   getAttendance,
   upsertAttendance,
+  getClientAttendance,
 } from "@/controllers/internal/attendance.controller";
 
 import {
@@ -43,6 +44,8 @@ import {
   attendanceUpsertSchema,
   clientDataSchema,
   createClientSchema,
+  clientsQuerySchema,
+  clientAttendanceQuerySchema,
 } from "@shared/validation";
 
 import { Role } from "@shared/types/domain.types";
@@ -116,7 +119,12 @@ router.get(
   asyncHandler(getClient)
 );
 
-router.get("/clients", asyncHandler(requireAuth), asyncHandler(getClients));
+router.get(
+  "/clients",
+  validationHandler({ query: clientsQuerySchema }),
+  asyncHandler(requireAuth),
+  asyncHandler(getClients)
+);
 
 router.put(
   "/clients/:id",
@@ -133,6 +141,13 @@ router.post(
   validationHandler({ body: createClientSchema }),
   asyncHandler(requireAuth),
   asyncHandler(createClient)
+);
+
+router.get(
+  "/attendance/client",
+  validationHandler({ query: clientAttendanceQuerySchema }),
+  asyncHandler(requireAuth),
+  asyncHandler(getClientAttendance)
 );
 
 router.get(

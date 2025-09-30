@@ -1,11 +1,14 @@
 import {
   getAttendanceService,
   upsertAttendanceService,
+  getClientAttendanceService,
 } from "@/services/internal/attendance.service";
 import type {
   AttendanceQuery,
   AttendanceList,
   AttendanceUpsert,
+  ClientAttendanceQuery,
+  ClientAttendanceMap,
 } from "@shared/validation";
 import { type ServiceResponse } from "@/types/server.types";
 import { isServiceSuccess } from "@/utils/controller.util";
@@ -48,4 +51,26 @@ export async function upsertAttendance(req: Request, res: Response) {
     return;
   }
   res.status(serviceResponse.status).end();
+}
+
+export async function getClientAttendance(req: Request, res: Response) {
+  if (!req.validatedQuery) throw new Error("validatedQuery missing");
+
+  const query = req.validatedQuery as ClientAttendanceQuery;
+  const serviceResponse: ServiceResponse<ClientAttendanceMap> =
+    await getClientAttendanceService(query);
+
+  if (!isServiceSuccess(serviceResponse)) {
+    res.fail({
+      status: serviceResponse.status,
+      errors: serviceResponse.errors,
+      message: serviceResponse.message,
+    });
+    return;
+  }
+
+  res.success({
+    data: serviceResponse.data,
+    message: serviceResponse.message,
+  });
 }

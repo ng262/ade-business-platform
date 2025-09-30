@@ -68,3 +68,37 @@ export async function upsertAttendanceService(
     client.release();
   }
 }
+
+export async function getClientAttendanceService({
+  month,
+  cid,
+}: ClientAttendanceQuery): Promise<ServiceResponse<ClientAttendanceMap>> {
+  console.log("Service: getClientAttendanceService", { month, cid });
+  const pool = await getPool();
+
+  const sql = `
+    SELECT
+      attendance_date,
+      attendance_status
+    FROM attendance
+    WHERE cid = $1
+      AND attendance_date >= (($2 || '-01')::date)
+      AND attendance_date <  (date_trunc('month', ($2 || '-01')::date) + interval '1 month')::date
+    ORDER BY attendance_date
+  `;
+
+  const result = await pool.query(sql, [cid, month]);
+
+  const map: ClientAttendanceMap = {};
+  for (const row of result.rows as Array<{
+    attendance_date: Date;
+    attendance_status: string;
+  }>) {
+    const d = row.attendance_date.toISOString().slice(0, 10);
+    map[d] = row.attendance_status as ClientAttendanceMap[string];
+  }
+
+  console.log("Service: getClientAttendanceService result", map);
+
+  return createSuccess({ data: map });
+}

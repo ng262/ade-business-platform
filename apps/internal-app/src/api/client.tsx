@@ -1,10 +1,12 @@
 import { fetchHandler } from "@/lib/fetchHandler";
 import type {
   SerialId,
+  SerialIdList,
   Client,
   ClientData,
   ClientList,
   DateString,
+  ClientsQuery,
 } from "@shared/validation";
 import {
   serialIdSchema,
@@ -12,6 +14,7 @@ import {
   clientSchema,
   clientListSchema,
   createClientSchema,
+  clientsQuerySchema,
 } from "@shared/validation";
 import {
   getClientService,
@@ -32,10 +35,14 @@ export async function getClient(id: SerialId): Promise<ClientResult<Client>> {
   });
 }
 
-export async function getClients(): Promise<ClientResult<ClientList>> {
+export async function getClients(
+  query: ClientsQuery
+): Promise<ClientResult<ClientList>> {
   return await fetchHandler({
     service: getClientsService,
     outputSchema: clientListSchema,
+    payload: { query: query },
+    payloadSchemas: { query: clientsQuerySchema },
   });
 }
 

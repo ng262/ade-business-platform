@@ -5,6 +5,7 @@ import type {
   ClientList,
   SerialId,
   DeleteClients,
+  ClientsQuery,
 } from "@shared/validation";
 import type { ServiceResponse } from "@/types/server.types";
 import { createSuccess, createFail } from "@/utils/service.util";
@@ -30,16 +31,23 @@ export async function getClientService(
   return createSuccess({ data: client });
 }
 
-export async function getClientsService(): Promise<
-  ServiceResponse<ClientList>
-> {
+export async function getClientsService({
+  side,
+}: ClientsQuery): Promise<ServiceResponse<ClientList>> {
   const pool = await getPool();
 
-  const query = `
+  let query = `
     SELECT id, fname, lname, side, status
     FROM clients
   `;
-  const result = await pool.query(query);
+  const params: any[] = [];
+
+  if (side) {
+    query += ` WHERE side = $1`;
+    params.push(side);
+  }
+
+  const result = await pool.query(query, params);
 
   const clientList: ClientList = result.rows ?? [];
   return createSuccess({ data: clientList });

@@ -7,6 +7,7 @@ import LoginPage from "@/pages/LoginPage";
 import ChallengePage from "@/pages/ChallengePage";
 import ForbiddenPage from "@/pages/ForbiddenPage";
 import AttendancePage from "@/pages/AttendancePage";
+import BillingPage from "@/pages/BillingPage";
 
 export default function App() {
   return (
@@ -25,6 +26,7 @@ export default function App() {
             }
           >
             <Route path="attendance" element={<AttendancePage />} />
+            <Route path="billing" element={<BillingPage />} />
           </Route>
         </Routes>
       </ThemeProvider>

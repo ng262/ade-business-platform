@@ -1,5 +1,9 @@
 import type { RequestPayload } from "@/lib/fetchHandler";
-import type { AttendanceQuery, AttendanceList } from "@shared/validation";
+import type {
+  AttendanceQuery,
+  AttendanceList,
+  ClientAttendanceQuery,
+} from "@shared/validation";
 import config from "@/config";
 
 export async function getAttendanceService({
@@ -20,6 +24,15 @@ export async function upsertAttendanceService({
       "Content-Type": "application/json",
     },
     body: JSON.stringify(body),
+    credentials: "include",
+  });
+}
+
+export async function getClientAttendanceService({
+  query,
+}: RequestPayload<undefined, ClientAttendanceQuery>): Promise<Response> {
+  const params = new URLSearchParams(query as Record<string, string>);
+  return fetch(`${config.apiUrl}/api/attendance/client?${params.toString()}`, {
     credentials: "include",
   });
 }
