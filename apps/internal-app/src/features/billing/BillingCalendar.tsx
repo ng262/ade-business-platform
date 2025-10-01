@@ -72,25 +72,19 @@ export function BillingCalendar({
         onMonthChange={(d) => onMonthChange(startOfMonth(d))}
         showOutsideDays
         modifiers={{ here: hereDays, absent: absentDays, notScheduled: nsDays }}
-        modifiersStyles={{
-          here: {
-            backgroundColor: "var(--attendance-present-bg)",
-            borderRadius: "0.375rem",
-            margin: "2px",
-          },
-          absent: {
-            backgroundColor: "var(--attendance-absent-bg)",
-            borderRadius: "0.375rem",
-            margin: "2px",
-          },
-          notScheduled: {
-            backgroundColor: "var(--attendance-not-scheduled-bg)",
-            borderRadius: "0.375rem",
-            margin: "2px",
-          },
+        modifiersClassNames={{
+          here: "after:content-[''] after:absolute after:inset-0 after:m-[2px] after:rounded-md after:bg-[var(--attendance-present-bg)] after:-z-10 after:pointer-events-none",
+          absent:
+            "after:content-[''] after:absolute after:inset-0 after:m-[2px] after:rounded-md after:bg-[var(--attendance-absent-bg)] after:-z-10 after:pointer-events-none",
+          notScheduled:
+            "after:content-[''] after:absolute after:inset-0 after:m-[2px] after:rounded-md after:bg-[var(--attendance-not-scheduled-bg)] after:-z-10 after:pointer-events-none",
+          today:
+            "before:content-[''] before:absolute before:inset-0 before:m-[2px] before:rounded-md before:ring before:ring-foreground/25 before:pointer-events-none",
         }}
         classNames={{
-          day: "h-9 w-9 p-0 font-normal rounded-md hover:bg-muted",
+          day: "relative z-0 h-9 w-9 p-0 font-normal rounded-md hover:bg-muted",
+          day_today:
+            "relative z-0 h-9 w-9 p-0 font-normal rounded-md hover:bg-muted",
         }}
         components={{ Caption }}
       />
