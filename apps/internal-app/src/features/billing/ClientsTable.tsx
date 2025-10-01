@@ -3,10 +3,6 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
-  getFilteredRowModel,
-  getSortedRowModel,
-  type ColumnFiltersState,
-  type SortingState,
   type VisibilityState,
   Row,
   useReactTable,
@@ -25,6 +21,7 @@ import { Badge } from "@/components/ui/badge";
 import { Status } from "@shared/types/domain.types";
 
 export type ClientRow = {
+  id: number;
   fname: string;
   lname: string;
   side: string;
@@ -64,16 +61,14 @@ const columnsBuilder = (
     size: 36,
   },
   {
-    accessorKey: "fname",
-    header: () => <div className="px-3 py-2">First Name</div>,
-    cell: ({ row }) => (
-      <div className="px-3 py-2 font-medium">{row.original.fname}</div>
-    ),
-  },
-  {
     accessorKey: "lname",
     header: () => <div className="px-3 py-2">Last Name</div>,
     cell: ({ row }) => <div className="px-3 py-2">{row.original.lname}</div>,
+  },
+  {
+    accessorKey: "fname",
+    header: () => <div className="px-3 py-2">First Name</div>,
+    cell: ({ row }) => <div className="px-3 py-2">{row.original.fname}</div>,
   },
   {
     accessorKey: "side",
@@ -81,6 +76,7 @@ const columnsBuilder = (
     cell: ({ row }) => (
       <div className="px-3 py-2 text-muted-foreground">{row.original.side}</div>
     ),
+    enableSorting: false,
   },
   {
     accessorKey: "status",
@@ -90,6 +86,7 @@ const columnsBuilder = (
         <StatusBadge status={row.original.status} />
       </div>
     ),
+    enableSorting: false,
   },
 ];
 
@@ -102,10 +99,6 @@ export function ClientsTable({
   rowSelection: Record<string, boolean>;
   onRowSelectionChange: (s: Record<string, boolean>) => void;
 }) {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [query, setQuery] = React.useState("");
@@ -117,6 +110,7 @@ export function ClientsTable({
     [onRowSelectionChange]
   );
 
+  // Simple search
   const filtered = React.useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return data;
@@ -125,21 +119,27 @@ export function ClientsTable({
     );
   }, [data, query]);
 
+  const sorted = React.useMemo(() => {
+    return [...filtered].sort((a, b) => {
+      const last = a.lname.localeCompare(b.lname);
+      if (last !== 0) return last;
+      return a.fname.localeCompare(b.fname);
+    });
+  }, [filtered]);
+
   const columns = React.useMemo(
     () => columnsBuilder(onSingleSelect),
     [onSingleSelect]
   );
 
   const table = useReactTable({
-    data: filtered,
+    data: sorted,
     columns,
     state: {
-      sorting,
-      columnFilters,
       columnVisibility,
       rowSelection,
     },
-    getRowId: (_row, idx) => String(idx),
+    getRowId: (row) => String(row.id),
     enableRowSelection: true,
     onRowSelectionChange: (updater) => {
       const next =
@@ -147,12 +147,8 @@ export function ClientsTable({
       const first = Object.keys(next).find((k) => next[k]);
       onRowSelectionChange(first ? { [first]: true } : {});
     },
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getSortedRowModel: getSortedRowModel(),
   });
 
   return (

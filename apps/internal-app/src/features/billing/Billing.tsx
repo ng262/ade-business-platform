@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import { startOfMonth, format } from "date-fns";
 import { ClientsTable, type ClientRow } from "./ClientsTable";
@@ -27,9 +25,7 @@ type ClientWithId = ClientRow & { id: number };
 export default function Billing() {
   const [rowSelection, setRowSelection] = React.useState<
     Record<string, boolean>
-  >({
-    "0": true,
-  });
+  >({});
   const [month, setMonth] = React.useState(startOfMonth(new Date()));
 
   const [clients, setClients] = React.useState<ClientWithId[]>([]);
@@ -43,6 +39,7 @@ export default function Billing() {
 
     if (!result.success) {
       setClients([]);
+      setRowSelection({});
       return;
     }
 
@@ -54,20 +51,58 @@ export default function Billing() {
       status: c.status as ClientStatus,
     })) as ClientWithId[];
 
+    rows.sort((a, b) => {
+      const last = a.lname.localeCompare(b.lname);
+      if (last !== 0) return last;
+      return a.fname.localeCompare(b.fname);
+    });
+
     setClients(rows);
+
+    setRowSelection((prev) => {
+      const selectedId = Object.keys(prev).find((k) => prev[k]);
+      const stillExists =
+        selectedId != null && rows.some((r) => String(r.id) === selectedId);
+      if (stillExists) return prev;
+      return rows.length ? { [String(rows[0].id)]: true } : {};
+    });
   }, [side]);
 
   React.useEffect(() => {
     void fetchClients();
   }, [fetchClients]);
 
-  const selectedIndex = React.useMemo(() => {
-    const id = Object.keys(rowSelection).find((k) => rowSelection[k]);
-    return id ? Number(id) : -1;
+  const selectedId = React.useMemo(() => {
+    return Object.keys(rowSelection).find((k) => rowSelection[k]) ?? null;
   }, [rowSelection]);
 
-  const selectedClient =
-    selectedIndex >= 0 ? (clients[selectedIndex] ?? null) : null;
+  const selectedClient = React.useMemo(() => {
+    return selectedId
+      ? (clients.find((c) => String(c.id) === selectedId) ?? null)
+      : null;
+  }, [clients, selectedId]);
+
+  const handleNextClient = React.useCallback(() => {
+    if (!clients.length) return;
+    if (!selectedId) {
+      setRowSelection({ [String(clients[0].id)]: true });
+      return;
+    }
+    const idx = clients.findIndex((c) => String(c.id) === selectedId);
+    const nextIdx = (idx + 1) % clients.length;
+    setRowSelection({ [String(clients[nextIdx].id)]: true });
+  }, [clients, selectedId]);
+
+  const handlePrevClient = React.useCallback(() => {
+    if (!clients.length) return;
+    if (!selectedId) {
+      setRowSelection({ [String(clients[0].id)]: true });
+      return;
+    }
+    const idx = clients.findIndex((c) => String(c.id) === selectedId);
+    const prevIdx = (idx - 1 + clients.length) % clients.length;
+    setRowSelection({ [String(clients[prevIdx].id)]: true });
+  }, [clients, selectedId]);
 
   const fetchClientAttendance = React.useCallback(async () => {
     if (selectedClient == null) {
@@ -132,6 +167,8 @@ export default function Billing() {
                 absentCount={absentCount}
                 hereCount={hereCount}
                 nsCount={nsCount}
+                onNextClient={clients.length > 1 ? handleNextClient : undefined}
+                onPrevClient={clients.length > 1 ? handlePrevClient : undefined}
               />
             </div>
           </div>
